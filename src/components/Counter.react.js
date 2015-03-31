@@ -8,23 +8,15 @@ let Counter = React.createClass({
     },
 
     getInitialState() {
-        let initialCount = 0;
-
-        this._getStateFromStores(count => {
-            initialCount = count;
-        });
-
-        return {count:initialCount};
+        return {count:0}
     },
 
-    componentDidMount(){
-      this._getStateFromStores(count => this.setState({count}));
+    componentWillMount(){
+      this.unsubscribeFromCounter = this.content.stores.Counter.subscribe(count => {
+         this.setState({count: count}) ;
+      });
     },
-
-    _getStateFromStores(cb) {
-        return this.context.stores.Counter.subscribe(cb);
-    },
-
+    
     _decrement(){
       this.context.actions.Counter.decrement.onNext();
     },
